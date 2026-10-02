@@ -1,6 +1,5 @@
 """Reporte TREXA - VICSON · Febeca
-Muestra en Streamlit el reporte HTML que está en la carpeta `reporte/`.
-Para publicar una versión nueva basta con subir el HTML descargado a esa carpeta del repositorio.
+Muestra en Streamlit el reporte HTML del repositorio (en la raíz o en la carpeta reporte/).
 """
 import re
 from datetime import datetime
@@ -21,7 +20,8 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-CARPETA = Path(__file__).parent / "reporte"
+RAIZ = Path(__file__).parent
+CARPETA = RAIZ / "reporte"
 
 
 def fecha_de(nombre: str):
@@ -41,7 +41,6 @@ def leer(ruta: str, mtime: float) -> str:  # mtime invalida la caché cuando cam
 
 
 # Busca los reportes en la carpeta reporte/ y también en la raíz del repositorio
-RAIZ = Path(__file__).parent
 archivos = list(CARPETA.glob("*.html")) + list(RAIZ.glob("*.html"))
 versiones = sorted(set(archivos), key=lambda p: (fecha_de(p.name), p.stat().st_mtime), reverse=True)
 
