@@ -40,12 +40,15 @@ def leer(ruta: str, mtime: float) -> str:  # mtime invalida la caché cuando cam
     return Path(ruta).read_text(encoding="utf-8")
 
 
-versiones = sorted(CARPETA.glob("*.html"), key=lambda p: (fecha_de(p.name), p.stat().st_mtime), reverse=True)
+# Busca los reportes en la carpeta reporte/ y también en la raíz del repositorio
+RAIZ = Path(__file__).parent
+archivos = list(CARPETA.glob("*.html")) + list(RAIZ.glob("*.html"))
+versiones = sorted(set(archivos), key=lambda p: (fecha_de(p.name), p.stat().st_mtime), reverse=True)
 
 with st.sidebar:
     st.markdown("### Reporte TREXA - VICSON")
     if not versiones:
-        st.error("No hay ningún archivo .html en la carpeta `reporte/` del repositorio.")
+        st.error("No hay ningún archivo .html del reporte en el repositorio.")
         st.stop()
     elegido = st.selectbox("Versión", versiones, format_func=lambda p: p.name,
                            help="Por defecto se muestra la de fecha más reciente.")
